@@ -21,6 +21,7 @@ group :test do
   gem 'test_declarative', :require => false
   gem 'mocha', :require => false
   gem 'rspec-rails', '~> 3.0'
+  gem 'gengo'
 end
 
 group :development, :test do
