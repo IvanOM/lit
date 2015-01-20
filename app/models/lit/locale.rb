@@ -38,6 +38,25 @@ module Lit
       localizations.count(:id)
     end
 
+    def gengo_package
+      localizations = self.localizations.without_translation
+      package = {jobs:{}}
+      localizations.each_with_index do |localization,i|
+        package[:jobs].merge! "job_#{i}".to_sym => {type:"text",
+          slug: localization.localization_key.localization_key,
+          body_src: localization.default_value,
+          lc_src:"en",
+          lc_tgt: locale.downcase,
+          tier: "standard"
+        }
+      end
+      package
+    end
+
+    def send_to_gengo
+      $gengo.postTranslationJobs(gengo_package)
+    end
+
     private
 
     def reset_available_locales_cache
