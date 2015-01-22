@@ -8,6 +8,8 @@ module Lit
     # @HACK: dirty, find a way to round date to full second
     scope :after, proc { |dt| where('updated_at >= ?', dt + 1.second) }
     scope :without_translation, proc { where(translated_value: nil)}
+    scope :by_language, proc { |loc| where(:locale => Lit::Locale.find_by_locale(loc)) }
+
 
     ## ASSOCIATIONS
     belongs_to :locale
@@ -33,6 +35,11 @@ module Lit
 
     def to_s
       get_value
+    end
+
+    def reference_value
+      reference_localization = localization_key.localizations.by_language(ENV['GENGO_REFERENCE_LANGUAGE']||'en').first
+      reference_localization.get_value if reference_localization
     end
 
     def full_key

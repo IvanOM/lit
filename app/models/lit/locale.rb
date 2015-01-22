@@ -25,6 +25,8 @@ module Lit
       locale
     end
 
+
+
     def get_translated_percentage
       total = get_all_localizations_count
       total > 0 ? (get_changed_localizations_count * 100 / total) : 0
@@ -44,7 +46,7 @@ module Lit
       localizations.each_with_index do |localization,i|
         package[:jobs].merge! "job_#{i}".to_sym => {type:"text",
           slug: localization.localization_key.localization_key,
-          body_src: localization.default_value,
+          body_src: localization.reference_value,
           lc_src:"en",
           lc_tgt: locale.downcase,
           tier: "standard"
