@@ -49,7 +49,8 @@ module Lit
           body_src: localization.reference_value,
           lc_src:"en",
           lc_tgt: locale.downcase,
-          tier: "standard"
+          tier: "standard",
+          auto_approve: "1"
         }
       end
       package
