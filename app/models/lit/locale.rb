@@ -60,6 +60,14 @@ module Lit
       $gengo.postTranslationJobs(gengo_package)
     end
 
+    def create_localization_from_gengo job
+      localization_key = Lit::LocalizationKey.find_by_localization_key(job["slug"])
+      if localization_key
+        localization = self.localizations.find_by_localization_key_id(localization_key.id)
+        localization.update_attributes translated_value: job["body_tgt"] if localization
+      end
+    end
+
     private
 
     def reset_available_locales_cache
