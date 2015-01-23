@@ -6,6 +6,14 @@ module Lit
       get_localization_keys
     end
 
+    def update
+      @localization_key = LocalizationKey.find params[:id]
+      @localization_key.ignore = true
+      @localization_key.save
+      get_localization_keys
+      render action: :index
+    end
+
     def starred
       @scope = @scope.where(is_starred: true)
 

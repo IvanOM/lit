@@ -11,7 +11,7 @@
 
 <table class="table">
   <%- @localization_keys.each do |lk| %>
-    <tr class="localization_key_row" data-id="<%= lk.id %>">
+    <tr class="localization_key_row <%= "danger" if lk.ignore %>" data-id="<%= lk.id %>">
       <td>
         <span>
           <strong><%= default_localization(lk) %></strong>:
@@ -19,6 +19,7 @@
         </span>
         <span class="badge"><%= Lit.init.cache.get_global_hits_counter(lk.localization_key) %></span>
         <div class="localization_keys_options">
+	  <%= link_to t(".ignore", default: "Ignore"), lit.localization_key_path(lk), :method => :put %>
           <%= link_to lit.star_localization_key_path(lk), :remote=>true, :class=>"star_icon" do %>
             <%= draw_icon lk.is_starred? ? 'star' : 'star-o' %>
           <% end %>
