@@ -3,9 +3,7 @@ module Lit
     def self.retrieve_and_process_jobs(timestamp)
       job_ids = get_job_ids(timestamp)
       jobs = get_jobs(job_ids)
-      for job in jobs
-        insert_job(job)
-      end
+      process_jobs jobs
     end
 
     def self.get_job_ids timestamp
@@ -24,6 +22,12 @@ module Lit
         return jobs["response"]["jobs"]
       else
         return []
+      end
+    end
+
+    def self.process_jobs(jobs)
+      for job in jobs
+        insert_job(job)
       end
     end
 
