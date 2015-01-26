@@ -11,7 +11,7 @@ module Lit
       @localization_key.ignore = true
       @localization_key.save
       get_localization_keys
-      render action: :index
+      return redirect_to action: "index"
     end
 
     def starred
@@ -60,16 +60,20 @@ module Lit
       get_current_locale
       @search_options = params.slice(*valid_keys)
       @search_options[:include_completed] = '1' if @search_options.empty?
-      @scope = LocalizationKey.uniq.preload(localizations: :locale).search(@search_options)
-      if @current_locale and @current_locale != '' and !get_all and (!@search_options[:key] or @search_options[:key].empty?)
-        @scope = @scope.nulls_for(@current_locale)
+      @scope = LocalizationKey.uniq.preload(localizations: :locale)
+        .search(@search_options)
+      if @current_locale and @current_locale != '' and !get_all and
+         (!@search_options[:key] or @search_options[:key].empty?)
+        @scope = @scope.nulls_for(@current_locale).not(:ignored)
       end
       return @scope
     end
 
     def get_localization_keys
       key_parts = @search_options[:key_prefix].to_s.split('.').length
-      @prefixes = @scope.reorder(nil).uniq.pluck(:localization_key).map { |lk| lk.split('.').shift(key_parts + 1).join('.') }.uniq.sort
+      @prefixes = @scope.reorder(nil).uniq.pluck(:localization_key).map { |lk| 
+        lk.split('.').shift(key_parts + 1).join('.')
+      }.uniq.sort
       if @search_options[:key_prefix].present?
         parts = @search_options[:key_prefix].split('.')
         @parent_prefix = parts[0, parts.length - 1].join('.')
