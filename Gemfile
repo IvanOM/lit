@@ -25,4 +25,5 @@ end
 group :development, :test do
   gem "sqlite3"
   gem "sass-rails"
+  gem "factory_girl_rails"
 end

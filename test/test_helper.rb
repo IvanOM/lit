@@ -7,6 +7,7 @@ require 'capybara/rails'
 require 'database_cleaner'
 require 'test_declarative'
 require 'mocha/setup'
+require 'factory_girl_rails'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -58,4 +59,5 @@ class ActionController::TestCase
   include Warden::Test::Helpers
   include Devise::TestHelpers
   Warden.test_mode!
+  include FactoryGirl::Syntax::Methods
 end
