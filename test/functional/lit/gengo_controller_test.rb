@@ -9,26 +9,32 @@ module Lit
     setup do
       Lit.authentication_function = nil
       @routes = Lit::Engine.routes
+      @reference_language = lit_locales(:en)
+      @new_language = lit_locales(:pl)
+      @lk = lit_localization_keys(:string)
+      @reference_localization = Lit::Localization.new()
+      @reference_localization.locale = @reference_language
+      @reference_localization.localization_key = @lk
+      @reference_localization.default_value = "value"
+      @reference_localization.save
+      @new_localization = Lit::Localization.new()
+      @new_localization.locale = @new_language
+      @new_localization.localization_key = @lk
+      @new_localization.default_value = nil
+      @new_localization.save
     end
     
     test 'should create source' do
-      reference_language = lit_locales(:en)
-      new_language = lit_locales(:pl)
-      lk = lit_localization_keys(:string)
-      reference_localization = Lit::Localization.new()
-      reference_localization.locale = reference_language
-      reference_localization.localization_key = lk
-      reference_localization.default_value = "value"
-      reference_localization.save
-      new_localization = Lit::Localization.new()
-      new_localization.locale = new_language
-      new_localization.localization_key = lk
-      new_localization.default_value = nil
-      new_localization.save
-
+      
       assert_routing({method: "post", path: "/gengo"},{controller: "lit/gengo", action: "create"})
-      post :create, job: {slug: lk.localization_key, ob_id:"1235761",body_src:"value",lc_src:"en",lc_tgt:"pl",unit_count:"1",tier:"standard",credits:"0.05",status:"approved",eta:-1,ctime:1422313047,callback_url:"http:\/\/requestb.in\/1hm623f1",auto_approve:"1",body_tgt:"warto\u015b\u0107"}
-      assert_equal "warto\u015b\u0107", new_localization.reload.translated_value
+      post :create, job: {slug: @lk.localization_key, ob_id:"1235761",body_src:"value",lc_src:"en",lc_tgt:"pl",unit_count:"1",tier:"standard",credits:"0.05",status:"approved",eta:-1,ctime:1422313047,callback_url:"http:\/\/requestb.in\/1hm623f1",auto_approve:"1",body_tgt:"warto\u015b\u0107"}
+      assert_equal "warto\u015b\u0107", @new_localization.reload.translated_value
+    end
+
+    test 'should send to translation' do
+      assert_routing({method: "post", path: "/gengo/translate"}, {controller: "lit/gengo", action: "translate"})
+      post :translate, {pl: true, en: false}
+
     end
   end
 end
