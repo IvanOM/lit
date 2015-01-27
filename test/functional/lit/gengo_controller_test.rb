@@ -23,13 +23,12 @@ module Lit
       new_localization = Lit::Localization.new()
       new_localization.locale = new_language
       new_localization.localization_key = lk
-      new_localization.default_value = nil.to_yaml
+      new_localization.default_value = nil
       new_localization.save
 
-      assert_difference('new_localization.translated_value') do
-        post :create, job: {job_id:"1235761",body_src:"value",lc_src:"en",lc_tgt:"pl",unit_count:"1",tier:"standard",credits:"0.05",status:"approved",eta:-1,ctime:1422313047,callback_url:"http:\/\/requestb.in\/1hm623f1",auto_approve:"1",body_tgt:"warto\u015b\u0107"}
-        new_localization.reload
-      end
+      assert_routing({method: "post", path: "/gengo"},{controller: "lit/gengo", action: "create"})
+      post :create, job: {slug: lk.localization_key, ob_id:"1235761",body_src:"value",lc_src:"en",lc_tgt:"pl",unit_count:"1",tier:"standard",credits:"0.05",status:"approved",eta:-1,ctime:1422313047,callback_url:"http:\/\/requestb.in\/1hm623f1",auto_approve:"1",body_tgt:"warto\u015b\u0107"}
+      assert_equal "warto\u015b\u0107", new_localization.reload.translated_value
     end
   end
 end
