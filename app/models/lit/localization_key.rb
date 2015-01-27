@@ -12,6 +12,8 @@ module Lit
       joins(:localizations).merge(Lit::Localization.without_value).
       merge(Lit::Localization.for_locale(locale))
     }
+    scope :ignored, proc { where(ignore: true) }
+    scope :not, proc { |scope| where(send(scope).where_values.reduce(:and).not) }
     ## ASSOCIATIONS
     has_many :localizations, dependent: :destroy
     has_many :locales

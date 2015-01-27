@@ -20,9 +20,11 @@ group :test do
   gem "fakeweb", "~> 1.3", :require => false
   gem "test_declarative", :require => false
   gem "mocha", :require => false
+  gem "minitest-rails"
 end
 
 group :development, :test do
   gem "sqlite3"
   gem "sass-rails"
+  gem "factory_girl_rails"
 end
