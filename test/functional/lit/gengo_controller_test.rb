@@ -5,6 +5,12 @@ module Lit
   class GengoControllerTest < ActionController::TestCase
     fixtures 'lit/locales'
     fixtures 'lit/localization_keys'
+
+    setup do
+      Lit.authentication_function = nil
+      @routes = Lit::Engine.routes
+    end
+    
     test 'should create source' do
       reference_language = lit_locales(:en)
       new_language = lit_locales(:pl)
