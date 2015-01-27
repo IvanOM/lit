@@ -4,6 +4,8 @@ module Lit
     scope :ordered, proc { order('locale ASC') }
     scope :visible, proc { where(is_hidden: false) }
     scope :by_job, lambda {|locale| }
+    scope :just_locale, proc { |locale| where(locale: locale) }
+
     ## ASSOCIATIONS
     has_many :localizations, dependent: :destroy
 
@@ -29,7 +31,12 @@ module Lit
 
     def get_translated_percentage
       total = get_all_localizations_count
-      total > 0 ? (get_changed_localizations_count * 100 / total) : 0
+      empty = get_untranslated_localizations_count
+      total > 0 ? ((total-empty) * 100 / total) : 0
+    end
+
+    def get_untranslated_localizations_count
+      localizations.without_value.count
     end
 
     def get_changed_localizations_count
@@ -41,7 +48,7 @@ module Lit
     end
 
     def gengo_package
-      localizations = self.localizations.without_translation
+      localizations = self.localizations.without_value
       package = {jobs:{}}
       localizations.each_with_index do |localization,i|
         package[:jobs].merge! "job_#{i}".to_sym => {type:"text",

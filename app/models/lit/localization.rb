@@ -7,9 +7,16 @@ module Lit
     scope :changed, proc { where(is_changed: true) }
     # @HACK: dirty, find a way to round date to full second
     scope :after, proc { |dt| where('updated_at >= ?', dt + 1.second) }
-    scope :without_translation, proc { where(translated_value: nil)}
-    scope :by_language, proc { |loc| where(:locale => Lit::Locale.find_by_locale(loc)) }
 
+    scope :within, proc { |scope|
+      where(['localization_key_id in (:scope)', {scope: scope}])
+    }
+    scope :without_value, proc {
+      where(translated_value: nil).where(default_value: nil.to_yaml)
+    }
+    scope :for_locale, proc { |locale|
+      joins(:locale).merge(Lit::Locale.just_locale(locale))
+    }
 
     ## ASSOCIATIONS
     belongs_to :locale
@@ -38,7 +45,7 @@ module Lit
     end
 
     def reference_value
-      reference_localization = localization_key.localizations.by_language(ENV['GENGO_REFERENCE_LANGUAGE']||'en').first
+      reference_localization = localization_key.localizations.for_locale(ENV['GENGO_REFERENCE_LANGUAGE']||'en').first
       reference_localization.get_value if reference_localization
     end
 

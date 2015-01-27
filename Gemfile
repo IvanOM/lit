@@ -1,30 +1,31 @@
-source 'https://rubygems.org'
+source "http://rubygems.org"
 
-gem 'jquery-rails'
-gem 'rails', '4.1.0'
-gem 'devise'
-gem 'pg'
+gem "jquery-rails"
+gem "rails", "3.2.14"
+gem "kaminari"
+gem "devise"
+gem "pg"
 
 group :assets do
-  gem 'coffee-rails', '~> 4.0.1'
+  gem "coffee-rails", ">= 3.0.0"
 end
 
 group :test do
-  gem 'capybara'
-  gem 'database_cleaner'
-  gem 'launchy'
-  gem 'redis'
-  gem 'simple_form'
-  gem 'ransack'
-  gem 'kaminari'
-  gem 'fakeweb', '~> 1.3', :require => false
-  gem 'test_declarative', :require => false
-  gem 'mocha', :require => false
-  gem 'rspec-rails', '~> 3.0'
   gem 'gengo'
+  gem "capybara"
+  gem "database_cleaner"
+  gem "launchy"
+  gem "redis"
+  gem "simple_form"
+  gem "ransack"
+  gem "fakeweb", "~> 1.3", :require => false
+  gem "test_declarative", :require => false
+  gem "mocha", :require => false
+  gem "minitest-rails"
 end
 
 group :development, :test do
-  gem 'sqlite3'
-  gem 'sass-rails',   '~> 4.0.3'
+  gem "sqlite3"
+  gem "sass-rails"
+  gem "factory_girl_rails"
 end

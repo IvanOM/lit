@@ -15,7 +15,6 @@ development:
 test:
   adapter: postgresql
   database: lit_test
-  host: localhost
   pool: 5
   timeout: 5000
 

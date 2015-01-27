@@ -1,10 +1,16 @@
 module Lit
   class LocalizationKeysController < ::Lit::ApplicationController
     before_filter :get_localization_scope, except: [:destroy]
-    before_filter :get_current_locale, only: [:index]
 
     def index
       get_localization_keys
+    end
+
+    def update
+      @localization_key = LocalizationKey.find params[:id]
+      @localization_key.ignore = !@localization_key.ignore
+      @localization_key.save
+      respond_to :js
     end
 
     def starred
@@ -39,15 +45,39 @@ module Lit
       @current_locale = params[:current_locale]
     end
 
+    def get_all
+      return params[:all]
+    end
+
+    def localizations_without_value
+      localizations = Lit::Localization.within(@scope).without_value
+      return localizations.for_locale(@current_locale) if @current_locale and @current_locale != ''
+      return localizations
+    end
+
     def get_localization_scope
+      get_current_locale
+      @include_ignored = params[:include_ignored]
       @search_options = params.slice(*valid_keys)
       @search_options[:include_completed] = '1' if @search_options.empty?
-      @scope = LocalizationKey.uniq.preload(localizations: :locale).search(@search_options)
+      @scope = LocalizationKey.uniq.preload(localizations: :locale)
+        .search(@search_options)
+      if @current_locale and @current_locale != '' and !get_all and
+         (!@search_options[:key] or @search_options[:key].empty?)
+        @scope = @scope.nulls_for(@current_locale)
+      end
+      
+      unless @include_ignored
+        @scope = @scope.not(:ignored)
+      end
+      return @scope
     end
 
     def get_localization_keys
       key_parts = @search_options[:key_prefix].to_s.split('.').length
-      @prefixes = @scope.reorder(nil).uniq.pluck(:localization_key).map { |lk| lk.split('.').shift(key_parts + 1).join('.') }.uniq.sort
+      @prefixes = @scope.reorder(nil).uniq.pluck(:localization_key).map { |lk| 
+        lk.split('.').shift(key_parts + 1).join('.')
+      }.uniq.sort
       if @search_options[:key_prefix].present?
         parts = @search_options[:key_prefix].split('.')
         @parent_prefix = parts[0, parts.length - 1].join('.')
@@ -95,6 +125,7 @@ module Lit
     end
 
     helper_method :localization_for
+    helper_method :localizations_without_value
 
     def has_versions?(localization)
       @_versions ||= begin

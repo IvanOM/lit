@@ -5,6 +5,29 @@ module Lit
     fixtures 'lit/localization_keys'
     fixtures 'lit/locales'
 
+    def setup
+      l = lit_localization_keys(:hello_world)
+      locale_pl = lit_locales(:pl)
+      locale_en = lit_locales(:en)
+      @lc_pl = Lit::Localization.new()
+      @lc_pl.locale = locale_pl
+      @lc_pl.default_value = nil
+      @lc_pl.localization_key = l
+      @lc_pl.save()
+
+      @lc_en = Lit::Localization.new()
+      @lc_en.locale = locale_en
+      @lc_en.localization_key = l
+      @lc_en.default_value = "Some text"
+      @lc_en.save()
+
+      @array = lit_localization_keys(:array)
+      @lc_array_pl = Lit::Localization.new()
+      @lc_array_pl.locale = locale_pl
+      @lc_array_pl.localization_key = @array
+      @lc_array_pl.save()
+    end
+
     test 'does not create version upon creation' do
       I18n.locale = :en
       assert_no_difference 'Lit::LocalizationVersion.count' do
@@ -37,9 +60,32 @@ module Lit
       reference_language = lit_locales(:en)
       new_language = lit_locales(:pl)
       lk = lit_localization_keys(:string)
-      reference_localization = Lit::Localization.create(locale: reference_language,localization_key: lk,default_value: "value")
-      new_localization = Lit::Localization.create(locale: new_language,localization_key: lk,default_value: nil.to_yaml)
+      reference_localization = Lit::Localization.new()
+      reference_localization.locale = reference_language
+      reference_localization.localization_key = lk
+      reference_localization.default_value = "value"
+      reference_localization.save
+      new_localization = Lit::Localization.new()
+      new_localization.locale = new_language
+      new_localization.localization_key = lk
+      new_localization.default_value = nil
+      new_localization.save
       assert_equal new_localization.reference_value, "value"
+    end
+    
+    test 'without_value returns only localizations without a value' do
+      assert_equal([@lc_pl], Lit::Localization.without_value)
+    end
+
+    test 'locale scope returns only localizaions of a specific locale' do
+      assert_equal([@lc_en], Lit::Localization.for_locale(:en))
+    end
+
+    test 'within scope filters by localization keys' do
+      scope = Lit::LocalizationKey.where(id: @array.id)
+      assert_equal([@lc_array_pl], Lit::Localization.within(scope))
+      scope = Lit::LocalizationKey.all
+      assert_equal(3, Lit::Localization.within(scope).count)
     end
   end
 end
