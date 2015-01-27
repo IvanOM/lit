@@ -3,7 +3,7 @@ module Lit
     ## SCOPES
     scope :ordered, proc { order('locale ASC') }
     scope :visible, proc { where(is_hidden: false) }
-
+    scope :by_job, lambda {|locale| }
     ## ASSOCIATIONS
     has_many :localizations, dependent: :destroy
 
@@ -64,7 +64,9 @@ module Lit
       localization_key = Lit::LocalizationKey.find_by_localization_key(job["slug"])
       if localization_key
         localization = self.localizations.find_by_localization_key_id(localization_key.id)
-        localization.update_attributes translated_value: job["body_tgt"] if localization
+        return localization.update_attributes translated_value: job["body_tgt"] if localization
+      else
+        return false
       end
     end
 

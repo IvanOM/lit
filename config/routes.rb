@@ -45,5 +45,7 @@ Lit::Engine.routes.draw do
     end
   end
 
+  resource :gengo,:controller => "gengo"
+
   root :to=>"dashboard#index"
 end

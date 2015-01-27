@@ -3,7 +3,7 @@ module Lit
     def self.retrieve_and_process_jobs(timestamp)
       job_ids = get_job_ids(timestamp)
       jobs = get_jobs(job_ids)
-      process_jobs jobs
+      process_jobs(jobs)
     end
 
     def self.get_job_ids timestamp
@@ -17,6 +17,7 @@ module Lit
     end
 
     def self.get_jobs job_ids
+      return [] if job_ids.blank?
       jobs = $gengo.getTranslationJobs({ids: job_ids})
       if jobs and jobs["opstat"] == "ok" and jobs["response"] and jobs["response"]["jobs"]
         return jobs["response"]["jobs"]
