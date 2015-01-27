@@ -2,6 +2,7 @@
 ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
+require 'minitest/rails'
 require 'rails/test_help'
 require 'capybara/rails'
 require 'database_cleaner'
@@ -27,10 +28,16 @@ DatabaseCleaner.strategy = :transaction
 DatabaseCleaner.clean_with :truncation
 
 class ActiveSupport::TestCase
-  self.use_transactional_fixtures = true
+  self.use_transactional_fixtures = false
   setup do
     clear_redis
     Lit.init.cache.reset
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
+  end
+  
+  teardown do
+    DatabaseCleaner.clean
   end
 end
 

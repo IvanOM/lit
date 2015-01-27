@@ -8,10 +8,9 @@ module Lit
 
     def update
       @localization_key = LocalizationKey.find params[:id]
-      @localization_key.ignore = true
+      @localization_key.ignore = !@localization_key.ignore
       @localization_key.save
-      get_localization_keys
-      return redirect_to action: "index"
+      respond_to :js
     end
 
     def starred
@@ -58,13 +57,18 @@ module Lit
 
     def get_localization_scope
       get_current_locale
+      @include_ignored = params[:include_ignored]
       @search_options = params.slice(*valid_keys)
       @search_options[:include_completed] = '1' if @search_options.empty?
       @scope = LocalizationKey.uniq.preload(localizations: :locale)
         .search(@search_options)
       if @current_locale and @current_locale != '' and !get_all and
          (!@search_options[:key] or @search_options[:key].empty?)
-        @scope = @scope.nulls_for(@current_locale).not(:ignored)
+        @scope = @scope.nulls_for(@current_locale)
+      end
+      
+      unless @include_ignored
+        @scope = @scope.not(:ignored)
       end
       return @scope
     end

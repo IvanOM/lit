@@ -19,7 +19,7 @@
         </span>
         <span class="badge"><%= Lit.init.cache.get_global_hits_counter(lk.localization_key) %></span>
         <div class="localization_keys_options">
-	  <%= link_to t(".ignore", default: "Ignore"), lit.localization_key_path(lk), :method => :put %>
+	  <%= link_to t(".ignore", default: "Ignore"), lit.localization_key_path(lk), :remote=>true, method: :put %>
           <%= link_to lit.star_localization_key_path(lk), :remote=>true, :class=>"star_icon" do %>
             <%= draw_icon lk.is_starred? ? 'star' : 'star-o' %>
           <% end %>
@@ -75,6 +75,12 @@
         <%= check_box_tag :include_completed, '1', @search_options[:include_completed].to_i==1 %>
         <%= t('.is_completed', :default=>"Include completed") %>
       </label>
+      
+      <label class="checkbox">
+        <%= check_box_tag :include_ignored, '1', @include_ignored %>
+        <%= t('.is_ignored', :default => "Include ignored") %>
+      </label>
+
       <div class="input-group">
         <%= select_tag :current_locale,
           options_for_select(I18n.available_locales, request.parameters[:current_locale]),
