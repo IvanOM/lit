@@ -30,6 +30,11 @@ module Lit
       assert_equal "warto\u015b\u0107", @new_localization.reload.translated_value
     end
     
+    test "#translate should receive requested locales" do
+      post :translate, locales: ["pl"]
+      assert_equal ["pl"], @controller.params[:locales]
+    end
+    
     test '#new should render a form' do
       assert_routing({method: "get", path: "/gengo/new"}, {controller: "lit/gengo", action: "new"})
       get :new

@@ -1,12 +1,12 @@
 <h2>Choose languages to translate</h2>
-<%= form_tag do %>
-  <ul class="list-unstyled">
+<%= form_tag translate_gengo_index_path do %>
+  <ul class="list-group">
     <% @locales.each do |locale| %>
-      <li>
-        <%= check_box_tag(locale.locale) %>
-        <%= label_tag(locale.locale) %>
+      <li class="list-group-item">
+        <%= check_box_tag("locales[]", locale.locale) %>
+        <%= label_tag(:locales, locale.locale) %>
       </li>
     <% end %>
   </ul>
-  <%= submit_tag "Send to translation" %>
+  <%= submit_tag "Send to translation", class: "btn btn-primary" %>
 <% end %>
