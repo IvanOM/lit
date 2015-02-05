@@ -45,7 +45,7 @@ Lit::Engine.routes.draw do
     end
   end
 
-  resources :gengo, only: [:create] do
+  resources :gengo, only: [:create, :new] do
     collection do
       post "translate"
     end

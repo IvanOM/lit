@@ -9,5 +9,9 @@ module Lit
       end
       render text:"ok"
     end
+    
+    def new
+      @locales = Locale.ordered.all
+    end
   end
 end

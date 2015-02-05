@@ -1,0 +1,12 @@
+<h2>Choose languages to translate</h2>
+<%= form_tag do %>
+  <ul class="list-unstyled">
+    <% @locales.each do |locale| %>
+      <li>
+        <%= check_box_tag(locale.locale) %>
+        <%= label_tag(locale.locale) %>
+      </li>
+    <% end %>
+  </ul>
+  <%= submit_tag "Send to translation" %>
+<% end %>
