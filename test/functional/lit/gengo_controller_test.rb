@@ -6,7 +6,7 @@ module Lit
     fixtures 'lit/locales'
     fixtures 'lit/localization_keys'
 
-    setup do
+    before do
       Lit.authentication_function = nil
       @routes = Lit::Engine.routes
       @reference_language = lit_locales(:en)
@@ -24,26 +24,39 @@ module Lit
       @new_localization.save
     end
     
-    test 'should create source' do 
-      assert_routing({method: "post", path: "/gengo"},{controller: "lit/gengo", action: "create"})
-      post :create, job: {slug: @lk.localization_key, ob_id:"1235761",body_src:"value",lc_src:"en",lc_tgt:"pl",unit_count:"1",tier:"standard",credits:"0.05",status:"approved",eta:-1,ctime:1422313047,callback_url:"http:\/\/requestb.in\/1hm623f1",auto_approve:"1",body_tgt:"warto\u015b\u0107"}
-      assert_equal "warto\u015b\u0107", @new_localization.reload.translated_value
-    end
+    describe GengoController do
+      describe "#create" do
+        it 'should create source' do 
+          assert_routing({method: "post", path: "/gengo"},{controller: "lit/gengo", action: "create"})
+          post :create, job: {slug: @lk.localization_key, ob_id:"1235761",body_src:"value",lc_src:"en",lc_tgt:"pl",unit_count:"1",tier:"standard",credits:"0.05",status:"approved",eta:-1,ctime:1422313047,callback_url:"http:\/\/requestb.in\/1hm623f1",auto_approve:"1",body_tgt:"warto\u015b\u0107"}
+          assert_equal "warto\u015b\u0107", @new_localization.reload.translated_value
+        end
+      end
     
-    test "#translate should receive requested locales" do
-      post :translate, locales: ["pl"]
-      assert_equal ["pl"], @controller.params[:locales]
-    end
+      describe "#translate" do
+        it "should receive requested locales" do
+          post :translate, locales: ["pl"]
+          assert_equal ["pl"], @controller.params[:locales]
+        end
+        
+        it "should render new template" do
+          post :translate, locales: ["pl"]
+          assert_template :new
+        end
+      end
     
-    test '#new should render a form' do
-      assert_routing({method: "get", path: "/gengo/new"}, {controller: "lit/gengo", action: "new"})
-      get :new
-      assert_template :new
-    end
+      describe "#new" do
+        it 'should render new template' do
+          assert_routing({method: "get", path: "/gengo/new"}, {controller: "lit/gengo", action: "new"})
+          get :new
+          assert_template :new
+        end
     
-    test '#new should assing locales' do
-      get :new
-      assert_equal Locale.ordered.all, assigns(:locales)
+        it 'should assing locales' do
+          get :new
+          assert_equal Locale.ordered.all, assigns(:locales)
+        end
+      end
     end
   end
 end
