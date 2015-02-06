@@ -7,4 +7,9 @@ namespace :lit do
       puts "Successfully exported #{PATH}."
     end
   end
+  
+  desc 'Insert all locales to the database.'
+  task load: :environment do
+    I18n.backend.send(:load_translations)
+  end
 end

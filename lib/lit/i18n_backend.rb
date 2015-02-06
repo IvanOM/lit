@@ -40,6 +40,7 @@ module Lit
     # @param [String] locale the locale (ie "en") to store translations for
     # @param [Hash] data nested key-value pairs to be added as blurbs
     def store_translations(locale, data, options = {})
+      print "."
       super
       locales = ::Rails.configuration.i18n.available_locales
       if !locales || locales.map(&:to_s).include?(locale.to_s)
@@ -97,8 +98,10 @@ module Lit
     end
 
     def load_translations(*filenames)
+      puts "Loading translations"
       @cache.load_all_translations
       super
+      puts "finished!"
     end
   end
 end
