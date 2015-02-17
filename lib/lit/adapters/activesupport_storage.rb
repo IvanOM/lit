@@ -1,9 +1,9 @@
 module Lit
   extend self
   def activesupport
-    $activesupport ||= ActiveSupport::Cache::MemoryStore.new(expires_in: 1.minute, size: 1250.kilobytes)
+    $activesupport ||= ActiveSupport::Cache::MemoryStore.new(size: 1250.kilobytes)
   end
-  class MemoryStorage
+  class ActiveSupportStorage
     def initialize
       Lit.activesupport
     end

@@ -36,15 +36,15 @@ module Lit
 
   def self.get_key_value_engine
     case Lit.key_value_engine
-        when 'redis'
-          require 'lit/adapters/redis_storage'
-          return RedisStorage.new
-        when 'memory'
-          require 'lit/adapters/activesupport_storage'
-          return MemoryStorage.new
-        else
-          require 'lit/adapters/hash_storage'
-          return HashStorage.new
+      when 'redis'
+        require 'lit/adapters/redis_storage'
+        return RedisStorage.new
+      when 'activesupport'
+        require 'lit/adapters/activesupport_storage'
+        return ActiveSupportStorage.new
+      else
+        require 'lit/adapters/hash_storage'
+        return HashStorage.new
     end
   end
 end
