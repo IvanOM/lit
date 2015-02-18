@@ -9,6 +9,14 @@
 
 <% available_locales = I18n.backend.available_locales %>
 
+<div class="pull-right">
+	<%= link_to ignore_all_localization_keys_path(params), method: :post, :data=>{:confirm=>t('lit.common.you_sure', :default=>"Are you sure?")} do %>
+	  <button class="btn btn-primary btn-sm">
+			<%= t('.ignore_all', default: 'Ignore This List') %>
+		</button>
+	<% end %>
+</div>
+
 <table class="table">
   <%- @localization_keys.each do |lk| %>
     <tr class="localization_key_row <%= "danger" if lk.ignore %>" data-id="<%= lk.id %>">

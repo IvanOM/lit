@@ -13,10 +13,9 @@ module Lit
       respond_to :js
     end
     
-    def ignore_localization_keys
-      get_localization_keys
-      @localization_keys.update_all(ignore: true)
-      redirect_to localization_keys_path
+    def ignore_all
+      @scope.update_all(ignore: true)
+      redirect_to localization_keys_path(params.except(:action, :controller, :authenticity_token))
     end
 
     def starred
