@@ -12,6 +12,12 @@ module Lit
       @localization_key.save
       respond_to :js
     end
+    
+    def ignore_localization_keys
+      get_localization_keys
+      @localization_keys.update_all(ignore: true)
+      redirect_to localization_keys_path
+    end
 
     def starred
       @scope = @scope.where(is_starred: true)

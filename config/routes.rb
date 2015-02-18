@@ -22,6 +22,7 @@ Lit::Engine.routes.draw do
     end
     collection do
       get :starred
+      post :ignore_localization_keys
     end
     resources :localizations, :only=>[:edit, :update] do
       member do

@@ -49,9 +49,21 @@ module Lit
       
       it 'should assign ignored localization_keys when asked to' do
         @lk_hello_world.ignore = true
-	@lk_hello_world.save
+        @lk_hello_world.save
         get :index, key_prefix: "hello_world", include_ignored: true
         assert_includes assigns(:localization_keys), @lk_hello_world
+      end
+      
+      describe "#ignore_localization_keys" do
+        it "ignore incompleted localization keys" do
+          @other_localization_key = create(:localization_key, localization_key: "other_key")
+          @lk_hello_world.is_completed = true
+          @lk_hello_world.save
+          post :ignore_localization_keys, include_completed: 0
+          assert_equal false, @lk_hello_world.reload.ignore
+          assert_equal true, @other_localization_key.reload.ignore
+          assert_redirected_to localization_keys_path
+        end
       end
     end
   end
