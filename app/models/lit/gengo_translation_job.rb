@@ -1,5 +1,7 @@
 module Lit
-  class GengoTranslationJob
+  class GengoTranslationJob < ActiveRecord::Base
+    attr_accessible :job_id, :data
+    
     def self.retrieve_and_process_jobs(timestamp)
       job_ids = get_job_ids(timestamp)
       jobs = get_jobs(job_ids)
