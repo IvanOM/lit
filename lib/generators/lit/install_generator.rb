@@ -53,6 +53,16 @@ module Lit
         end
       end
 
+      def add_gengo_initializer
+        path = "#{::Rails.root}/config/initializers/gengo.rb"
+        if File.exist?(path)
+          puts 'Skipping config/initializers/gengo.rb creation, file already exists!'
+        else
+          puts 'Adding gengo initializer (config/initializers/gengo.rb)...'
+          template 'gengo.rb', path
+        end
+      end
+
       def run_migrations
         unless options['no-migrate']
           puts 'Running rake db:migrate'
