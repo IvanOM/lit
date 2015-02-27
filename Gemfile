@@ -1,10 +1,12 @@
 source "http://rubygems.org"
 
 gem "jquery-rails"
-gem "rails", "3.2.14"
+gem "rails", "~> 3.2.21"
 gem "kaminari"
 gem "devise"
 gem "pg"
+gem "test-unit"
+gem 'gengo_rails', git: 'https://github.com/henriquecf/gengo_rails'
 
 group :assets do
   gem "coffee-rails", ">= 3.0.0"

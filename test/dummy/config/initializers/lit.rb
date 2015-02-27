@@ -1,6 +1,6 @@
 
-Lit.authentication_function = :authenticate_admin!
-Lit.key_value_engine = ENV['LIT_STORAGE'] || 'redis'
+Lit.authentication_function = :authenticate_user!
+Lit.key_value_engine = ENV['LIT_STORAGE'] || 'activesupport'
 Lit.fallback = true
 Lit.humanize_key = true
 Lit.api_enabled = true
