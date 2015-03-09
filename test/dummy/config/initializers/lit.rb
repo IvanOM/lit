@@ -1,5 +1,5 @@
 
-Lit.authentication_function = :authenticate_user!
+Lit.authentication_function = :authenticate_admin!
 Lit.key_value_engine = ENV['LIT_STORAGE'] || 'activesupport'
 Lit.fallback = true
 Lit.humanize_key = true
