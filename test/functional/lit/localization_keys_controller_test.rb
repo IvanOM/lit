@@ -53,6 +53,12 @@ module Lit
         get :index, key_prefix: "hello_world", include_ignored: true
         assert_includes assigns(:localization_keys), @lk_hello_world
       end
+      
+      describe "GET export_to_gengo_rails" do
+        it "should export scope to gengo_rails" do
+          skip("do this after this feature is finished")
+        end
+      end
     end
   end
 end

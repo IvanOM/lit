@@ -12,6 +12,28 @@ module Lit
       @localization_key.save
       respond_to :js
     end
+    
+    def export_to_gengo_rails
+      localizations_list = []
+      @scope.each do |lk|
+        if en_localization = lk.localizations.for_locale(:en).first
+          en_value = en_localization.translated_value || en_localization.default_value
+          if en_value
+            lk.localizations.includes(:locale).each do |loc|
+              unless loc.locale.locale == "en"
+                if loc.translated_value.blank?
+                  localizations_list << { value: en_value, path: lk.localization_key, locale: loc.locale.locale }
+                end
+              end
+            end
+          end
+        end
+      end
+      
+      @localization_factory = LocalizationFactory.new.from_list(localizations_list)
+      
+      render "localizations/import"
+    end
 
     def starred
       @scope = @scope.where(is_starred: true)

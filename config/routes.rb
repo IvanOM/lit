@@ -22,6 +22,7 @@ Lit::Engine.routes.draw do
     end
     collection do
       get :starred
+      get :export_to_gengo_rails
     end
     resources :localizations, :only=>[:edit, :update] do
       member do
