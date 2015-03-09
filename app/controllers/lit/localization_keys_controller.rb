@@ -19,7 +19,9 @@ module Lit
         if en_localization = lk.localizations.for_locale(:en).first
           en_value = en_localization.translated_value || en_localization.default_value
           if en_value
-            lk.localizations.includes(:locale).each do |loc|
+            localizations = lk.localizations.includes(:locale)
+            localizations = localizations.for_locale(params[:current_locale]) if params[:current_locale]
+            localizations.each do |loc|
               unless loc.locale.locale == "en"
                 if loc.translated_value.blank?
                   localizations_list << { value: en_value, path: lk.localization_key, locale: loc.locale.locale }
