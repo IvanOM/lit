@@ -12,6 +12,11 @@ module Lit
       @localization_key.save
       respond_to :js
     end
+    
+    def ignore_all
+      @scope.update_all(ignore: true)
+      redirect_to localization_keys_path(params.except(:action, :controller, :authenticity_token))
+    end
 
     def starred
       @scope = @scope.where(is_starred: true)

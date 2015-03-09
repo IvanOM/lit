@@ -49,9 +49,28 @@ module Lit
       
       it 'should assign ignored localization_keys when asked to' do
         @lk_hello_world.ignore = true
-	@lk_hello_world.save
+        @lk_hello_world.save
         get :index, key_prefix: "hello_world", include_ignored: true
         assert_includes assigns(:localization_keys), @lk_hello_world
+      end
+      
+      describe "#ignore_all" do
+        it "ignore incompleted localization keys" do
+          @other_localization_key = create(:localization_key, localization_key: "other_key")
+          @other_lk = create(:localization_key, localization_key: "third_lk")
+          @lk_hello_world.is_completed = true
+          @lk_hello_world.save
+          post :ignore_all, include_completed: 0
+          assert_equal false, @lk_hello_world.reload.ignore
+          assert_equal true, @other_localization_key.reload.ignore
+          assert_equal true, @other_lk.reload.ignore
+        end
+        
+        it "should redirect with params" do
+          params = { include_completed: 1 }
+          post :ignore_all, params
+          assert_redirected_to localization_keys_path(params)
+        end
       end
     end
   end
